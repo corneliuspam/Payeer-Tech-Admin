@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -44,7 +44,7 @@
     <div class="card">
       <div class="section-title"><h3>Post Announcement</h3></div>
       <textarea id="announcement" rows="3" placeholder="Message for all users"></textarea>
-      <button onclick="postAnnouncement()">Send Announcement</button>
+      <button onclick="approveAnnouncement()">Send Announcement</button>
     </div>
 
     <!-- CREATE TASK -->
@@ -52,7 +52,7 @@
       <div class="section-title"><h3>Create Task</h3></div>
       <input id="taskTitle" placeholder="Task Title" />
       <input id="taskAmount" value="1000" disabled />
-      <button onclick="createTask()">Create Task</button>
+      <button onclick="approveTaskCreation()">Create Task</button>
     </div>
 
     <!-- PENDING TASK SUBMISSIONS -->
@@ -63,7 +63,7 @@
         <tr>
           <td>123456</td>
           <td>Join Telegram Channel</td>
-          <td><button class="approve" onclick="approveTask()">Approve</button></td>
+          <td><button class="approve" onclick="approveUserTask(123456,'task001')">Approve</button></td>
         </tr>
       </table>
     </div>
@@ -77,7 +77,7 @@
           <td>123456</td>
           <td>₦5000</td>
           <td>GTBank<br>0123456789<br>John Doe</td>
-          <td><button class="approve" onclick="approveWithdrawal()">Approve</button></td>
+          <td><button class="approve" onclick="approveWithdrawalRequest(123456,5000)">Approve</button></td>
         </tr>
       </table>
     </div>
@@ -90,6 +90,7 @@
 const ADMIN_EMAIL='corneliuspam8736@gmail.com';
 const ADMIN_PASS='2001@pam';
 
+// ADMIN LOGIN
 function adminLogin(){
   const email=document.getElementById('adminEmail').value;
   const pass=document.getElementById('adminPassword').value;
@@ -101,10 +102,52 @@ function adminLogin(){
   }
 }
 
-function postAnnouncement(){alert('Announcement sent (connect backend)');}
-function createTask(){alert('Task created (₦1000)');}
-function approveTask(){alert('Task approved. Balance updated');}
-function approveWithdrawal(){alert('Withdrawal approved');}
+// APPROVE FUNCTIONS
+function approveAnnouncement(){
+  const message=document.getElementById('announcement').value;
+  if(!message){alert('Enter a message'); return;}
+  // Call your backend API here
+  fetch('https://your-backend.com/admin/announcement', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message})
+  }).then(res=>res.json())
+    .then(data=>alert(data.message || 'Announcement sent'))
+    .catch(err=>alert('Error sending announcement'));
+}
+
+function approveTaskCreation(){
+  const title=document.getElementById('taskTitle').value;
+  if(!title){alert('Enter task title'); return;}
+  fetch('https://your-backend.com/admin/create-task',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({title,amount:1000})
+  }).then(res=>res.json())
+    .then(data=>alert(data.message || 'Task created'))
+    .catch(err=>alert('Error creating task'));
+}
+
+function approveUserTask(userId,taskId){
+  fetch('https://your-backend.com/admin/approve-task',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({userId,taskId})
+  }).then(res=>res.json())
+    .then(data=>alert(data.message || 'Task approved'))
+    .catch(err=>alert('Error approving task'));
+}
+
+function approveWithdrawalRequest(userId,amount){
+  fetch('https://your-backend.com/admin/approve-withdrawal',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({userId,amount})
+  }).then(res=>res.json())
+    .then(data=>alert(data.message || 'Withdrawal approved'))
+    .catch(err=>alert('Error approving withdrawal'));
+}
+
 function logout(){location.reload();}
 </script>
 
