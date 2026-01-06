@@ -87,7 +87,7 @@
 </div>
 
 <script>
-const ADMIN_EMAIL='youremail@gmail.com';
+const ADMIN_EMAIL='corneliuspam8736@gmail.com';
 const ADMIN_PASS='2001@pam';
 
 function adminLogin(){
